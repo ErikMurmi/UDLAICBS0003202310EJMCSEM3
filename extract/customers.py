@@ -1,5 +1,4 @@
 import traceback
-
 from sqlalchemy import column
 from util.db_connection import Db_Connection
 import pandas as pd 

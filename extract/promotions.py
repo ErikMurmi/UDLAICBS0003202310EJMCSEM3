@@ -1,6 +1,5 @@
 import traceback
 from util.db_connection import Db_Connection
-from jproperties import Properties
 import pandas as pd 
 
 

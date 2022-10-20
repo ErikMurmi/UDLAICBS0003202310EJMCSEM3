@@ -1,4 +1,3 @@
-from atexit import register
 import traceback
 from util.db_connection import Db_Connection
 import pandas as pd 

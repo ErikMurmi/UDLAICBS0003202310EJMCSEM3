@@ -3,7 +3,7 @@ from util.db_connection import Db_Connection
 import pandas as pd 
 from transform.transforms import obt_date,str_float_format
 
-def extProducts():
+def extProducts(load_id):
     try:
         con_db_stg = Db_Connection()
         ses_db_stg = con_db_stg.start()
@@ -24,7 +24,8 @@ def extProducts():
             "supplier_id":[],
             "prod_status":[],
             "prod_list_price":[],
-            "prod_min_price":[]
+            "prod_min_price":[],
+            "LOAD_ID":[]
         }
 
         products_tra = pd.read_sql('SELECT PROD_ID,\
@@ -49,8 +50,9 @@ def extProducts():
                 products_dict["prod_weight_class"].append(int(wei_cla)),
                 products_dict["supplier_id"].append(int(sup)),
                 products_dict["prod_status"].append(sta),
-                products_dict["prod_list_price"].append(str_float_format(lis_pri))
-                products_dict["prod_min_price"].append(str_float_format(min_pri))
+                products_dict["prod_list_price"].append(str_float_format(lis_pri)),
+                products_dict["prod_min_price"].append(str_float_format(min_pri)),
+                products_dict["LOAD_ID"].append(load_id)
 
         if products_dict["prod_id"]:
             df_channels_tra = pd.DataFrame(products_dict)

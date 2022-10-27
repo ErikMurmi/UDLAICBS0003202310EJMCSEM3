@@ -3,7 +3,7 @@ from util.db_connection import Db_Connection
 import pandas as pd 
 from transform.transforms import date_str_month, obt_date, str_float_format
 
-def extSales():
+def extSales(load_id):
     try:
 
         con_db_stg = Db_Connection()
@@ -22,6 +22,7 @@ def extSales():
             "promo_id":[],
             "quantity_sold":[],
             "amount_sold":[],
+            "LOAD_ID":[]
         }
         
         sales_tra = pd.read_sql('SELECT PROD_ID,CUST_ID,TIME_ID,\
@@ -40,7 +41,7 @@ def extSales():
                 sales_dict["promo_id"].append(int(pro)),
                 sales_dict["quantity_sold"].append(str_float_format(qua_sol)),
                 sales_dict["amount_sold"].append(str_float_format(amo_sol)),
-
+                sales_dict["LOAD_ID"].append(load_id)
         if sales_dict["prod_id"]:
             df_sales_tra = pd.DataFrame(sales_dict)
             df_sales_tra.to_sql('tra_sales',ses_db_stg,if_exists='append',index=False)

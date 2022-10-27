@@ -21,7 +21,7 @@ def extSales():
             "channel_id":[],
             "promo_id":[],
             "quantity_sold":[],
-            "amount_sold":[],
+            "amount_sold":[]
         }
 
         if not sales_csv.empty:
@@ -36,7 +36,7 @@ def extSales():
                 sales_dict["channel_id"].append(cha),
                 sales_dict["promo_id"].append(pro),
                 sales_dict["quantity_sold"].append(qua_sol),
-                sales_dict["amount_sold"].append(amo_sol),
+                sales_dict["amount_sold"].append(amo_sol)
 
         if sales_dict["prod_id"]:
             ses_db_stg.connect().execute("TRUNCATE TABLE SALES")

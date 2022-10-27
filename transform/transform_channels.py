@@ -3,7 +3,7 @@ from util.db_connection import Db_Connection
 import pandas as pd 
 from transform.transforms import *
 
-def extChannel():
+def extChannel(load_id):
     try:
         con_db_stg = Db_Connection()
         ses_db_stg = con_db_stg.start()
@@ -17,7 +17,8 @@ def extChannel():
             "channel_id":[],
             "channel_desc":[],
             "channel_class":[],
-            "channel_class_id":[]
+            "channel_class_id":[],
+            "LOAD_ID":[]
         }
         
         chan_tra = pd.read_sql('SELECT CHANNEL_ID,CHANNEL_DESC,CHANNEL_CLASS,CHANNEL_CLASS_ID from channels',ses_db_stg)
@@ -28,8 +29,8 @@ def extChannel():
                 channels_dict["channel_id"].append(int(id)),
                 channels_dict["channel_desc"].append(des),
                 channels_dict["channel_class"].append(cla),
-                channels_dict["channel_class_id"].append(int(cla_id))
-
+                channels_dict["channel_class_id"].append(int(cla_id)),
+                channels_dict["LOAD_ID"].append(load_id)
         if channels_dict["channel_id"]:
             df_channels_tra = pd.DataFrame(channels_dict)
             df_channels_tra.to_sql('tra_channel',ses_db_stg,if_exists='append',index=False)

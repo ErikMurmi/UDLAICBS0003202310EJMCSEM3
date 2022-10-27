@@ -5,14 +5,7 @@ import pandas as pd
 
 def extCustomers():
     try:
-        type = 'mysql'
-        host = 'localhost'
-        port = '3306'
-        user = 'root'
-        pwd = 'admin'
-        db = 'ejmcdbstg'
-
-        con_db_stg = Db_Connection(type,host,port,user,pwd,db)
+        con_db_stg = Db_Connection()
         ses_db_stg = con_db_stg.start()
 
         if ses_db_stg == -1:
@@ -20,10 +13,6 @@ def extCustomers():
         elif ses_db_stg == -2:
             raise Exception("Error trying to connect to the b2b_dwh_staging")
         customers_csv = pd.read_csv("data/customers.csv")
-        columns_names = list(customers_csv.columns)
-        #print(columns_names)
-        #customers_dict = dict.fromkeys(columns_names,[])
-        #print(customers_dict)
         customers_dict = {
             "cust_id":[],
             "cust_first_name":[],

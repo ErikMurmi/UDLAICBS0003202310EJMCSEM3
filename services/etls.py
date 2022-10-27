@@ -12,3 +12,14 @@ def getNewLoadId():
         traceback.print_exc()
     finally:
         pass
+
+def getActualLoad():
+    try:
+        connection=Db_Connection()
+        db = connection.start()
+        load_id= db.execute('SELECT load_id  FROM etl_hist ORDER BY load_id DESC limit 1').scalar()
+        return load_id
+    except:
+        traceback.print_exc()
+    finally:
+        pass

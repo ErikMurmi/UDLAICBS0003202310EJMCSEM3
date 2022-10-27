@@ -3,7 +3,7 @@ from sqlalchemy import column
 from util.db_connection import Db_Connection
 import pandas as pd 
 
-def extCustomers():
+def transformCustomers(load_id):
     try:
         con_db_stg = Db_Connection()
         ses_db_stg = con_db_stg.start()
@@ -12,7 +12,7 @@ def extCustomers():
             raise Exception(f"The give database type {type} is not valid")
         elif ses_db_stg == -2:
             raise Exception("Error trying to connect to the b2b_dwh_staging")
-        customers_csv = pd.read_csv("data/customers.csv")
+
         customers_dict = {
             "cust_id":[],
             "cust_first_name":[],
@@ -28,19 +28,24 @@ def extCustomers():
             "cust_main_phone_number":[],
             "cust_income_level":[],
             "cust_credit_limit":[],
-            "cust_email":[]
+            "cust_email":[],
+            "LOAD_ID":[]
         }
         
-        if not customers_csv.empty:
+        customers_tra = pd.read_sql('SELECT CUST_ID,CUST_FIRST_NAME,CUST_LAST_NAME,\
+        CUST_GENDER,CUST_YEAR_OF_BIRTH,CUST_MARITAL_STATUS,CUST_STREET_ADDRESS,CUST_POSTAL_CODE, \
+        CUST_CITY,CUST_STATE_PROVINCE,COUNTRY_ID,CUST_MAIN_PHONE_NUMBER,CUST_INCOME_LEVEL, \
+        CUST_CREDIT_LIMIT,CUST_EMAIL FROM customers', ses_db_stg)
+        if not customers_tra.empty:
             for id,fir_nam,las_nam,gen,bir,sta,add,cod,cit,prov,ctr_id,pho,inc,lim,ema \
-               in zip(customers_csv["CUST_ID"],customers_csv["CUST_FIRST_NAME"]
-                ,customers_csv["CUST_LAST_NAME"],customers_csv["CUST_GENDER"]
-                ,customers_csv["CUST_YEAR_OF_BIRTH"],customers_csv["CUST_MARITAL_STATUS"]
-                ,customers_csv["CUST_STREET_ADDRESS"],customers_csv["CUST_POSTAL_CODE"]
-                ,customers_csv["CUST_CITY"],customers_csv["CUST_STATE_PROVINCE"]
-                ,customers_csv["COUNTRY_ID"],customers_csv["CUST_MAIN_PHONE_NUMBER"]
-                ,customers_csv["CUST_INCOME_LEVEL"],customers_csv["CUST_CREDIT_LIMIT"],
-                customers_csv["CUST_EMAIL"]):
+               in zip(customers_tra["CUST_ID"],customers_tra["CUST_FIRST_NAME"]
+                ,customers_tra["CUST_LAST_NAME"],customers_tra["CUST_GENDER"]
+                ,customers_tra["CUST_YEAR_OF_BIRTH"],customers_tra["CUST_MARITAL_STATUS"]
+                ,customers_tra["CUST_STREET_ADDRESS"],customers_tra["CUST_POSTAL_CODE"]
+                ,customers_tra["CUST_CITY"],customers_tra["CUST_STATE_PROVINCE"]
+                ,customers_tra["COUNTRY_ID"],customers_tra["CUST_MAIN_PHONE_NUMBER"]
+                ,customers_tra["CUST_INCOME_LEVEL"],customers_tra["CUST_CREDIT_LIMIT"],
+                customers_tra["CUST_EMAIL"]):
                 customers_dict["cust_id"].append(id),
                 customers_dict["cust_first_name"].append(fir_nam),
                 customers_dict["cust_last_name"].append(las_nam),
@@ -56,13 +61,12 @@ def extCustomers():
                 customers_dict["cust_income_level"].append(inc),
                 customers_dict["cust_credit_limit"].append(lim),
                 customers_dict["cust_email"].append(ema),
-
+                customers_dict["LOAD_ID"].append(load_id)
 
         if customers_dict["cust_id"]:
-            ses_db_stg.connect().execute("TRUNCATE TABLE CUSTOMERS")
-            df_customers_ext = pd.DataFrame(customers_dict)
-            df_customers_ext.to_sql('customers',ses_db_stg,if_exists='append',index=False)
-        print(customers_csv)
+            df_customers_tra = pd.DataFrame(customers_dict)
+            df_customers_tra.to_sql('tra_customers',ses_db_stg,if_exists='append',index=False)
+        print(df_customers_tra)
     except:
         traceback.print_exc()
     finally:

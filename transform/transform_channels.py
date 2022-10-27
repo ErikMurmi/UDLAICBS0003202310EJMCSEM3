@@ -3,7 +3,7 @@ from util.db_connection import Db_Connection
 import pandas as pd 
 from transform.transforms import *
 
-def extChannel(load_id):
+def transformChannel(load_id):
     try:
         con_db_stg = Db_Connection()
         ses_db_stg = con_db_stg.start()

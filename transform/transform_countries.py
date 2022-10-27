@@ -2,7 +2,7 @@ import traceback
 from util.db_connection import Db_Connection
 import pandas as pd 
 
-def extCountries(load_id):
+def transform_countries(load_id):
     try:
         con_db_stg = Db_Connection()
         ses_db_stg = con_db_stg.start()
@@ -34,10 +34,9 @@ def extCountries(load_id):
                 countries_dict["LOAD_ID"].append(load_id)
 
         if countries_dict["country_id"]:
-            ses_db_stg.connect().execute("TRUNCATE TABLE COUNTRIES")
-            df_countries_ext = pd.DataFrame(countries_dict)
-            df_countries_ext.to_sql('countries',ses_db_stg,if_exists='append',index=False)
-        print(countries_csv)
+            df_countries_tra = pd.DataFrame(countries_dict)
+            df_countries_tra.to_sql('tra_countries',ses_db_stg,if_exists='append',index=False)
+        print(df_countries_tra)
     except:
         traceback.print_exc()
     finally:
